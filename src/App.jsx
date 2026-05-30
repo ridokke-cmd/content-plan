@@ -1006,7 +1006,9 @@ function ContentCalendar({ contents, updateContent, accounts, selYear, selMonth,
 
 function CalendarDetailModal({ item, accounts, updateContent, onClose }) {
   const [form, setForm] = useState({ status: item.status || "Pending", views: { instagram: item.views?.instagram || 0, tiktok: item.views?.tiktok || 0, youtube: item.views?.youtube || 0 }, script: item.script || "" });
-  const doSave = () => { updateContent(item.id, { status: form.status, views: form.views, script: form.script }); onClose(); };
+  const [editingScript, setEditingScript] = useState(false);
+  const saveScript = () => { updateContent(item.id, { status: form.status, views: form.views, script: form.script }); setEditingScript(false); };
+  const doSave = () => { updateContent(item.id, { status: form.status, views: form.views, script: form.script }); setEditingScript(false); onClose(); };
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal">
@@ -1021,7 +1023,31 @@ function CalendarDetailModal({ item, accounts, updateContent, onClose }) {
           </div>
           <button className="btn-ghost" style={{ padding: "5px 8px" }} onClick={onClose}><I n="close" s={13} /></button>
         </div>
-        <Fld label={form.script ? "Edit Script" : "Tambah Script"}><textarea value={form.script} onChange={e => setForm({ ...form, script: e.target.value })} rows={6} placeholder="Tulis script konten di sini..." style={{ resize: "vertical", whiteSpace: "pre-wrap", textAlign: "left", lineHeight: 1.8, fontSize: 12, color: "#E2EBF5" }} /></Fld>
+        {/* Script block */}
+        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: 14, marginBottom: 4 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <div className="lbl" style={{ marginBottom: 0 }}>Script</div>
+            <div style={{ display: "flex", gap: 6 }}>
+              {editingScript && (
+                <button onClick={saveScript} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 7, border: "1px solid rgba(34,197,94,0.4)", background: "rgba(34,197,94,0.1)", color: "#22C55E", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'Poppins',sans-serif", transition: "all 0.18s" }}>
+                  <I n="save" s={11} /> Simpan Script
+                </button>
+              )}
+            <button onClick={() => setEditingScript(v => !v)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 7, border: editingScript ? "1px solid rgba(56,189,248,0.4)" : "1px solid rgba(255,255,255,0.1)", background: editingScript ? "rgba(56,189,248,0.1)" : "transparent", color: editingScript ? "#38BDF8" : "#4A6A8A", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'Poppins',sans-serif", transition: "all 0.18s" }}>
+              {editingScript
+                ? <><I n="close" s={11} /> Batal</>
+                : <><I n="edit" s={11} /> {form.script ? "Edit" : "Tambah Script"}</>
+              }
+            </button>
+            </div>
+          </div>
+          {editingScript
+            ? <textarea value={form.script} onChange={e => setForm({ ...form, script: e.target.value })} rows={7} placeholder="Tulis script konten di sini..." style={{ resize: "vertical", whiteSpace: "pre-wrap", textAlign: "left", lineHeight: 1.8, fontSize: 12, color: "#E2EBF5", width: "100%", marginTop: 4 }} autoFocus />
+            : form.script
+              ? <div style={{ fontSize: 12, color: "#E2EBF5", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word", textAlign: "left" }}>{form.script}</div>
+              : <div style={{ fontSize: 12, color: "#1E3A5F", fontStyle: "italic" }}>Belum ada script. Klik Edit untuk menambahkan.</div>
+          }
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Fld label="Status Konten"><div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>{STATUSES.map(s => <button key={s} className={`pill-opt ${form.status === s ? "sel" : ""}`} style={form.status === s ? { borderColor: STATUS_COLORS[s], background: STATUS_BG[s], color: STATUS_COLORS[s] } : {}} onClick={() => setForm({ ...form, status: s })}>{s}</button>)}</div></Fld>
           <div><div className="lbl">Views per Platform</div>
