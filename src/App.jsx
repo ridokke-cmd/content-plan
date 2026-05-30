@@ -1016,10 +1016,16 @@ function CalendarDetailModal({ item, accounts, updateContent, onClose }) {
           <div>
             <div style={{ fontSize: 11, color: "#1E5F8A", marginBottom: 4 }}>{item.date}</div>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: "#E2EBF5" }}>{item.title}</h3>
-            <div style={{ display: "flex", gap: 7, marginTop: 8 }}>
+            <div style={{ display: "flex", gap: 7, marginTop: 8, flexWrap: "wrap" }}>
               <span className="tag" style={{ background: (PILLAR_COLORS[item.pillar] || "#38BDF8") + "22", color: PILLAR_COLORS[item.pillar] || "#38BDF8" }}>{item.pillar}</span>
               <span className="tag" style={{ background: "rgba(255,255,255,0.06)", color: "#4A6A8A" }}>{item.type}</span>
             </div>
+            {item.reference && (
+              <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 12 }}>🔗</span>
+                <a href={item.reference.startsWith("http") ? item.reference : "https://" + item.reference} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "#0EA5E9", wordBreak: "break-all", textDecoration: "none", fontWeight: 500 }} onMouseEnter={e => e.currentTarget.style.textDecoration="underline"} onMouseLeave={e => e.currentTarget.style.textDecoration="none"}>{item.reference}</a>
+              </div>
+            )}
           </div>
           <button className="btn-ghost" style={{ padding: "5px 8px" }} onClick={onClose}><I n="close" s={13} /></button>
         </div>
