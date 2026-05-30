@@ -844,6 +844,36 @@ function ContentFormModal({ item, onSave, onClose }) {
   const [form, setForm] = useState(item || { title: "", date: "", pillar: "", type: "", script: "", reference: "" });
   const valid = form.title && form.pillar && form.type;
   const isArchive = !form.date || form.date.trim() === "";
+
+  const exportScript = () => {
+    const lines = [];
+    lines.push("=".repeat(50));
+    lines.push("SCRIPT KONTEN");
+    lines.push("=".repeat(50));
+    lines.push("");
+    if (form.title)     lines.push(`Judul     : ${form.title}`);
+    if (form.date)      lines.push(`Tanggal   : ${form.date}`);
+    if (form.pillar)    lines.push(`Pillar    : ${form.pillar}`);
+    if (form.type)      lines.push(`Jenis     : ${form.type}`);
+    if (form.reference) lines.push(`Referensi : ${form.reference}`);
+    lines.push("");
+    lines.push("-".repeat(50));
+    lines.push("SCRIPT");
+    lines.push("-".repeat(50));
+    lines.push("");
+    lines.push(form.script || "(Script belum diisi)");
+    lines.push("");
+    lines.push("=".repeat(50));
+
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (form.title || "script").replace(/[^a-zA-Z0-9 _-]/g, "").replace(/\s+/g, "_").slice(0, 50);
+    a.href = url;
+    a.download = `${safeName}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal">
@@ -885,6 +915,27 @@ function ContentFormModal({ item, onSave, onClose }) {
           <button className="btn-primary" style={{ justifyContent: "center", marginTop: 4, opacity: valid ? 1 : 0.4 }} onClick={() => valid && onSave(form)} disabled={!valid}>
             <I n="save" s={13} /> {item ? "Update Konten" : isArchive ? "Simpan ke Archive" : "Simpan & Schedule"}
           </button>
+          {form.script && form.script.trim() !== "" && (
+            <button
+              onClick={exportScript}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                width: "100%", padding: "10px 18px", borderRadius: 10,
+                border: "1px solid rgba(56,189,248,0.3)",
+                background: "rgba(56,189,248,0.08)",
+                color: "#38BDF8", fontSize: 12, fontWeight: 700,
+                cursor: "pointer", fontFamily: "'Poppins',sans-serif",
+                transition: "all 0.18s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(56,189,248,0.15)"; e.currentTarget.style.borderColor = "rgba(56,189,248,0.5)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(56,189,248,0.08)"; e.currentTarget.style.borderColor = "rgba(56,189,248,0.3)"; }}
+            >
+              <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export Script (.txt)
+            </button>
+          )}
         </div>
       </div>
     </div>
