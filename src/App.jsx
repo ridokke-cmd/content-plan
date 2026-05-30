@@ -1021,7 +1021,7 @@ function CalendarDetailModal({ item, accounts, updateContent, onClose }) {
           </div>
           <button className="btn-ghost" style={{ padding: "5px 8px" }} onClick={onClose}><I n="close" s={13} /></button>
         </div>
-        {item.script && <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: 14, marginBottom: 16 }}><div className="lbl">Script</div><div style={{ fontSize: 12, color: "#4A6A8A", lineHeight: 1.7 }}>{item.script}</div></div>}
+        {item.script && <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: 14, marginBottom: 16 }}><div className="lbl">Script</div><div style={{ fontSize: 12, color: "#E2EBF5", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{item.script}</div></div>}
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Fld label="Status Konten"><div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>{STATUSES.map(s => <button key={s} className={`pill-opt ${form.status === s ? "sel" : ""}`} style={form.status === s ? { borderColor: STATUS_COLORS[s], background: STATUS_BG[s], color: STATUS_COLORS[s] } : {}} onClick={() => setForm({ ...form, status: s })}>{s}</button>)}</div></Fld>
           <div><div className="lbl">Views per Platform</div>
